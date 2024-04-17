@@ -1,0 +1,67 @@
+<?php
+    include_once('config.php');
+    session_start();
+    print_r($_SESSION['email']);
+
+    if((!isset($_SESSION['email']) == true) && (!isset($_SESSION['email']) == true)){
+        unset($_SESSION['email']);
+        unset($_SESSION['senha']);
+        header('Location: login.php');
+    }
+
+    $logado = $_SESSION['email'];
+
+    
+
+    if (isset($_FILES['file'])) {
+        $arquivo = $_FILES['file'];
+        
+        if($arquivo['error']){
+            die('algo de errado rolou');
+        }
+
+        $pasta = "arquivos/";
+        $nomeArquivo = $arquivo['name'];
+        $novoNomeArquivo = uniqid();
+        $extensao = strtolower(pathinfo($nomeArquivo, PATHINFO_EXTENSION));
+
+        if($extensao != 'jpg' && $extensao != 'png')
+            die ("Tipo de arquivo não aceito");
+        else
+            echo "Deu certo";
+
+        $path =  $pasta . $novoNomeArquivo . "." . $extensao;
+        $deuCerto = move_uploaded_file($arquivo["tmp_name"], $path);
+        if($deuCerto){
+            $conexao->query("INSERT INTO tb_foto (path) VALUES('$path')") or die("Deu erro no upload");
+            echo "<br> Deu certo caralho seu puto";
+            //echo "Para acessar <a target= \"blank\" href=\"arquivos/$novoNomeArquivo.$extensao\">Clique aqui</a>";
+        }
+        else{
+            echo "algo deu errado";
+        }
+        var_dump($arquivo);
+    }
+   
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema</title>
+</head>
+<body>
+    <h1>Logado caraio</h1>
+
+    <a href="sair.php">Sair</a>
+
+    <form action="" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" id="">
+        <input type="submit" value="Enviar" name="enviar">
+
+    </form>
+
+</body>
+</html>
